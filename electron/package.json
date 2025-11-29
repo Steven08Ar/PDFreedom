@@ -1,0 +1,8 @@
+{
+    "name": "pdfreedom-electron",
+    "version": "1.0.0",
+    "main": "electron.js",
+    "dependencies": {
+        "electron-is-dev": "^2.0.0"
+    }
+}
