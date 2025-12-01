@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,11 +8,24 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#3b82f6',
-                secondary: '#1e293b',
-                accent: '#8b5cf6',
-                dark: '#0f172a',
-                'dark-light': '#1e293b'
+                // Light Mode
+                light: {
+                    bg: '#F5F5F5', // Light gray background
+                    surface: '#FFFFFF', // White surface
+                    text: '#171717', // Almost black text
+                    border: '#E5E7EB', // Light border
+                },
+                // Dark Mode
+                dark: {
+                    bg: '#121212', // Dark graphite background
+                    surface: '#1E1E1E', // Darker surface
+                    text: '#FFFFFF', // White text
+                    border: '#333333', // Dark border
+                },
+                // Accents
+                primary: '#2563EB', // Adobe Blue-ish
+                'primary-hover': '#1D4ED8',
+                accent: '#60A5FA', // Ice Blue
             }
         },
     },

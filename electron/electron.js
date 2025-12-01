@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const { spawn } = require('child_process');
@@ -34,6 +34,55 @@ function createWindow() {
     }
 
     mainWindow.on('closed', () => (mainWindow = null));
+
+    // Create Application Menu
+    const template = [
+        {
+            label: 'File',
+            submenu: [
+                { role: 'quit' }
+            ]
+        },
+        {
+            label: 'Edit',
+            submenu: [
+                { role: 'undo' },
+                { role: 'redo' },
+                { type: 'separator' },
+                { role: 'cut' },
+                { role: 'copy' },
+                { role: 'paste' },
+                { role: 'delete' },
+                { type: 'separator' },
+                { role: 'selectAll' }
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+                { role: 'resetZoom' },
+                { role: 'zoomIn' },
+                { role: 'zoomOut' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' }
+            ]
+        },
+        {
+            label: 'Window',
+            submenu: [
+                { role: 'minimize' },
+                { role: 'zoom' },
+                { role: 'close' }
+            ]
+        }
+    ];
+
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 }
 
 function startBackend() {
@@ -43,13 +92,6 @@ function startBackend() {
     }
 
     const backendPath = path.join(__dirname, '../backend/src/app.js');
-    // In production, we might want to bundle the backend or ensure node is available.
-    // For this setup, we assume node is available or we bundle the backend logic.
-    // A robust way for production is to use a bundled backend or pkg, but for this task we spawn node.
-    // Note: In a real packaged app, you'd bundle the backend into the executable or ship a node binary.
-    // Here we'll assume the user has node or we are just running the script.
-    // Actually, for electron-builder, we can include the backend folder in 'files' and spawn it.
-
     backendProcess = spawn('node', [backendPath], {
         cwd: path.join(__dirname, '../backend'),
     });

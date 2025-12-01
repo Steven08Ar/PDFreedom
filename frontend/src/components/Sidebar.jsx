@@ -1,47 +1,60 @@
 import React from 'react';
-import { FileText, Layers, Scissors, Copy, PenTool, Settings } from 'lucide-react';
+import { Layers, Scissors, Copy, FileText, ChevronLeft, Stamp } from 'lucide-react';
 
-const Sidebar = ({ activeTool, setActiveTool }) => {
+const Sidebar = ({ activeTool, setActiveTool, isOpen, toggleSidebar }) => {
     const tools = [
-        { id: 'view', name: 'Viewer', icon: FileText },
-        { id: 'merge', name: 'Merge', icon: Layers },
-        { id: 'split', name: 'Split', icon: Scissors },
-        { id: 'clone', name: 'Clone', icon: Copy },
-        // { id: 'edit', name: 'Edit', icon: PenTool },
+        { id: 'view', name: 'View PDF', icon: FileText, desc: 'Read' },
+        { id: 'edit', name: 'Edit Content', icon: Scissors, desc: 'Modify' },
+        { id: 'organize', name: 'Organize', icon: Layers, desc: 'Reorder' },
+        { id: 'watermark', name: 'Watermark', icon: Stamp, desc: 'Stamp' },
+        { id: 'merge', name: 'Merge', icon: Layers, desc: 'Combine' },
+        { id: 'split', name: 'Split', icon: Scissors, desc: 'Extract' },
+        { id: 'clone', name: 'Clone', icon: Copy, desc: 'Duplicate' },
     ];
 
     return (
-        <div className="w-64 bg-secondary h-screen flex flex-col border-r border-gray-700">
-            <div className="p-6">
-                <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-                    <FileText className="w-8 h-8" />
-                    PDFreedom
-                </h1>
-            </div>
-
-            <nav className="flex-1 px-4 space-y-2">
-                {tools.map((tool) => (
-                    <button
-                        key={tool.id}
-                        onClick={() => setActiveTool(tool.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTool === tool.id
-                                ? 'bg-primary text-white'
-                                : 'text-gray-400 hover:bg-dark-light hover:text-white'
-                            }`}
-                    >
-                        <tool.icon className="w-5 h-5" />
-                        <span className="font-medium">{tool.name}</span>
+        <aside
+            className={`
+        absolute inset-y-0 left-0 z-40 w-64 bg-light-surface dark:bg-dark-surface border-r border-light-border dark:border-dark-border transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:relative lg:translate-x-0
+      `}
+        >
+            <div className="h-full flex flex-col">
+                <div className="p-4 border-b border-light-border dark:border-dark-border flex items-center justify-between lg:hidden">
+                    <h3 className="font-semibold text-light-text dark:text-dark-text">Tools</h3>
+                    <button onClick={toggleSidebar}>
+                        <ChevronLeft className="w-5 h-5 text-gray-500" />
                     </button>
-                ))}
-            </nav>
+                </div>
 
-            <div className="p-4 border-t border-gray-700">
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-colors">
-                    <Settings className="w-5 h-5" />
-                    <span>Settings</span>
-                </button>
+                <div className="flex-1 overflow-y-auto p-3 space-y-1">
+                    {tools.map((tool) => (
+                        <button
+                            key={tool.id}
+                            onClick={() => {
+                                setActiveTool(tool.id);
+                                if (window.innerWidth < 1024) toggleSidebar();
+                            }}
+                            className={`
+                w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group
+                ${activeTool === tool.id
+                                    ? 'bg-primary/10 text-primary border-l-4 border-primary'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border-l-4 border-transparent'}
+              `}
+                        >
+                            <tool.icon className={`w-5 h-5 ${activeTool === tool.id ? 'text-primary' : 'text-gray-500'}`} />
+
+                            <div className="text-left">
+                                <span className="block font-medium text-sm">
+                                    {tool.name}
+                                </span>
+                            </div>
+                        </button>
+                    ))}
+                </div>
             </div>
-        </div>
+        </aside>
     );
 };
 

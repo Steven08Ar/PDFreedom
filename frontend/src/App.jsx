@@ -1,26 +1,55 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
-import { FileText } from 'lucide-react';
 
 function App() {
     const [activeTool, setActiveTool] = useState('view');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [currentFileName, setCurrentFileName] = useState(null);
+    const [hasFile, setHasFile] = useState(false);
+
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="flex h-screen bg-dark text-white overflow-hidden">
-            <Sidebar activeTool={activeTool} setActiveTool={setActiveTool} />
+        <ThemeProvider>
+            <div className="flex flex-col h-screen bg-light-bg dark:bg-dark-bg transition-colors duration-300 overflow-hidden">
+                <Header
+                    toggleSidebar={toggleSidebar}
+                    fileName={currentFileName}
+                />
 
-            <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-                <header className="h-16 bg-secondary border-b border-gray-700 flex items-center px-8 justify-between shrink-0">
-                    <h2 className="text-xl font-semibold capitalize">{activeTool} Mode</h2>
-                    <div className="text-sm text-gray-400">v1.0.0</div>
-                </header>
+                <div className="flex-1 flex overflow-hidden relative">
+                    {hasFile && (
+                        <Sidebar
+                            activeTool={activeTool}
+                            setActiveTool={setActiveTool}
+                            isOpen={isSidebarOpen}
+                            toggleSidebar={toggleSidebar}
+                        />
+                    )}
 
-                <div className="flex-1 overflow-auto p-6">
-                    <Dashboard activeTool={activeTool} />
+                    <main className="flex-1 overflow-hidden relative flex flex-col bg-gray-100 dark:bg-[#0c0c0c]">
+                        <div className="flex-1 overflow-hidden relative">
+                            <Dashboard
+                                activeTool={activeTool}
+                                setActiveTool={setActiveTool}
+                                onFileNameChange={setCurrentFileName}
+                                onFileLoaded={setHasFile}
+                            />
+                        </div>
+                    </main>
+
+                    {isSidebarOpen && hasFile && (
+                        <div
+                            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                            onClick={toggleSidebar}
+                        />
+                    )}
                 </div>
-            </main>
-        </div>
+            </div>
+        </ThemeProvider>
     );
 }
 
